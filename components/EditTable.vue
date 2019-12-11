@@ -2,6 +2,10 @@
   <v-container>
     <v-row>
       <v-col cols="12">
+        <v-btn-toggle v-model="dimsStaI">
+        <v-btn depressed text color="primary">Dims From</v-btn>
+        <v-btn depressed text color="primary">Dims To</v-btn>
+        </v-btn-toggle>
         <v-btn depressed color="primary" text>Export PLY</v-btn>
         <v-btn depressed text color="primary">Import</v-btn>
       </v-col>
@@ -72,7 +76,7 @@ export default {
       baseTabIndex: 100,
       showImportDialog: true,
       importedData: null,
-      dimStation: "f",
+      dimsStaI: 0,
       sVectors: [],
       stations: {},
       latlngs: [],
@@ -91,6 +95,9 @@ export default {
     };
   },
   computed: {
+    dimsStation: function(){
+      return ['f','t'][this.dimsStaI];
+    },
     colWidths: function(h) {
       var sum = this.headers.reduce(
         (acc, h) => acc + parseFloat(h.maxWidthFr),
@@ -114,7 +121,7 @@ export default {
     },
     baseStation: function() {
       return this.sVectors.length > 0
-        ? this.sVectors[0][this.dimStation]
+        ? this.sVectors[0].f
         : null;
     },
     wallShots: function() {
@@ -128,7 +135,16 @@ export default {
       this.cVectors.forEach(v => {
         for (let w of ["U", "D", "L", "R"]) {
           if(v[w]){
-            udlrV = this.udlrVector(v, w);
+            console.log('wallVectors')
+            console.log(JSON.stringify(v))
+            let vv = { ...v}
+            if(this.dimsStation === 't'){
+              vv.x = v.x + v.dx;
+              vv.y = v.y + v.dy;
+              vv.z = v.z + v.dz;
+              vv.f = v.t
+            }
+            udlrV = this.udlrVector(vv, w);
             if (udlrV) udlr.push(udlrV);
           }
         }
@@ -139,7 +155,9 @@ export default {
     wallPoints: function() {
       if (!Array.isArray(this.wallVectors)) return [];
       return this.wallVectors.map(v => {
-        let x = this.stations[v.f].x + v.dx;
+        console.log('wallPoints')
+        console.log(JSON.stringify(v))
+        let x = this.stations[v.f].x + v.dx; // v.f b/c root of wall shot vector
         let y = this.stations[v.f].y + v.dy;
         let z = this.stations[v.f].z + v.dz;
         return { x, y, z };
@@ -207,6 +225,13 @@ export default {
         v.r = v.R;
       }
       v.n = dir;
+      // if(this.dimsStation === 't'){
+      //   console.log('dims: to')
+      //   console.log(JSON.stringify(v))
+      //   v.x = v.x + v.dx;
+      //   v.y = v.y + v.dy;
+      //   v.z = v.z + v.dz;
+      // }
       v.t = v.U = v.D = v.L = v.R = v.dx = v.dy = v.dz = null;
       v = this.addDv(v);
       // console.log('V,dir,v')
