@@ -1,0 +1,23 @@
+{
+  "name": "cavemapper",
+  "version": "1.0.0",
+  "description": "Point cloud generator for cave survey data",
+  "author": "Yaman Özakın",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "leaflet": "^1.6.0",
+    "nuxt": "^2.0.0",
+    "vue2-leaflet": "^2.2.1",
+    "vue2-leaflet-axesgrid": "^1.1.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.0.0"
+  }
+}
