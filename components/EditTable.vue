@@ -21,7 +21,7 @@
             <tr>
               <td :class="{'has-error': !h.v(v0[h.name])}" v-for="(h,i) in headers" :key="`v0-${h.name}`">
                 <input
-                  :ref="'data'"
+                  :ref="'v0'"
                   @keydown="addVectorOnTabIfLastCol($event,i)"
                   v-model="v0[h.name]"
                   :tabindex="`${sVectors.length*headers.length + i + 1}`"
@@ -281,8 +281,7 @@ export default {
       ) {
         this.addVector();
         event.preventDefault();
-        var lastLineRefI = this.sVectors.length * this.headers.length + 1
-        this.$refs.data[lastLineRefI].focus();
+        this.$refs.v0[0].focus();
       }
     },
     emptyVector: function(headers) {
