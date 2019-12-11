@@ -82,10 +82,10 @@ export default {
         { name: "r", type:'float', text: "Dist", maxWidthFr: "4", v: v => !isNaN(parseFloat(v)) && parseFloat(v) > 0},
         { name: "th", type:'float', text: "Comp", maxWidthFr: "4", v: v => !isNaN(parseFloat(v)) && parseFloat(v) >= 0 && parseFloat(v)<=360},
         { name: "ph", type:'float', text: "Inc", maxWidthFr: "4", v: v => !isNaN(parseFloat(v)) && parseFloat(v) >= -90 && parseFloat(v)<=90 },
-        { name: "U", type:'float', text: "Up", maxWidthFr: "4", v: v => !v || (!isNaN(parseFloat(v)) && parseFloat(v) > 0) },
-        { name: "D", type:'float', text: "Down", maxWidthFr: "4", v: v => !v || (!isNaN(parseFloat(v)) && parseFloat(v) > 0) },
-        { name: "L", type:'float', text: "Left", maxWidthFr: "4", v: v => !v || (!isNaN(parseFloat(v)) && parseFloat(v) > 0) },
-        { name: "R", type:'float', text: "Right", maxWidthFr: "4", v: v =>!v || (!isNaN(parseFloat(v)) && parseFloat(v) > 0) },
+        { name: "U", type:'float', text: "Up", maxWidthFr: "4", v: v => !v || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) },
+        { name: "D", type:'float', text: "Down", maxWidthFr: "4", v: v => !v || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) },
+        { name: "L", type:'float', text: "Left", maxWidthFr: "4", v: v => !v || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) },
+        { name: "R", type:'float', text: "Right", maxWidthFr: "4", v: v =>!v || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) },
       ],
       v0: []
     };
@@ -102,6 +102,7 @@ export default {
       if (!Array.isArray(this.sVectors)) return [];
       var cVectors = [];
       this.sVectors.forEach(v => {
+        if(!this.vectorIsValid(v)) return;
         var V = {...v}
         for(var h of this.headers) {
           if(h.type==='float') V[h.name] = parseFloat(V[h.name])
@@ -177,9 +178,9 @@ export default {
       lines.forEach( l => {
         var vars = l.split('\t');
         var v = this.arrayToVector(vars)
-        if(this.vectorIsValid(v)){
+        // if(this.vectorIsValid(v)){
           this.sVectors.push(v)
-        }
+        // }
       })
       // console.log(this.sVectors);
       // text.split
