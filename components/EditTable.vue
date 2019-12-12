@@ -6,7 +6,7 @@
         <v-btn depressed text color="primary">Dims From</v-btn>
         <v-btn depressed text color="primary">Dims To</v-btn>
         </v-btn-toggle>
-        <v-btn depressed color="primary" text>Export PLY</v-btn>
+        <v-btn download="pointCloud.ply" link :href="`data:text/plain;charset=utf-8,${generatePLY()}`" depressed color="primary" text>Export PLY</v-btn>
         <v-btn depressed text color="primary">Import</v-btn>
       </v-col>
     </v-row>
@@ -135,8 +135,8 @@ export default {
       this.cVectors.forEach(v => {
         for (let w of ["U", "D", "L", "R"]) {
           if(v[w]){
-            console.log('wallVectors')
-            console.log(JSON.stringify(v))
+            // console.log('wallVectors')
+            // console.log(JSON.stringify(v))
             let vv = { ...v}
             if(this.dimsStation === 't'){
               vv.x = v.x + v.dx;
@@ -155,8 +155,8 @@ export default {
     wallPoints: function() {
       if (!Array.isArray(this.wallVectors)) return [];
       return this.wallVectors.map(v => {
-        console.log('wallPoints')
-        console.log(JSON.stringify(v))
+        // console.log('wallPoints')
+        // console.log(JSON.stringify(v))
         let x = this.stations[v.f].x + v.dx; // v.f b/c root of wall shot vector
         let y = this.stations[v.f].y + v.dy;
         let z = this.stations[v.f].z + v.dz;
@@ -169,12 +169,33 @@ export default {
       this.stations = this.createStationDict();
       this.calcStationCoordsRec(this.baseStation);
       // console.log('watch the watchers');
-      console.log(JSON.stringify(this.stations))
+      // console.log(JSON.stringify(this.stations))
       this.latlngs = this.calcLatlngs();
-      console.log(this.latlngs)
+      // console.log(this.latlngs)
     }
   },
   methods: {
+    generatePLY: function(){
+      var header = [
+        'ply',
+        'format ascii 1.0',
+        `element vertex ${this.wallPoints.length}`,
+        'property float x',
+        'property float y',
+        'property float z',
+        'end_header',
+      ];
+      var headerStr = header.join('\n')
+      var bodyStr = '';
+      this.wallPoints.forEach( p=> {
+        bodyStr += `${p.x} ${p.y} ${p.z}\n`
+      })
+      var plyStr = headerStr + '\n' + bodyStr;
+      return plyStr;
+    },
+    generateDataURI: function(str){
+      return 
+    },
     dataAreValid: function(val, i){
       this.sVectors.reduce( (acc,v) => acc && v.isValid, true)
     },
@@ -321,7 +342,7 @@ export default {
   },
   mounted: function() {
     this.v0 = this.emptyVector(this.headers);
-    console.log(this.$refs)
+    // console.log(this.$refs)
   }
 };
 </script>
