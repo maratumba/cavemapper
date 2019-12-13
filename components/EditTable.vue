@@ -347,7 +347,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+
+input:focus, textarea:focus, select:focus{
+
+    outline: none;
+
+}
+
 table#point-table{
   table-layout: fixed;
   width: 60%;
